@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  #MongoDB
+  mongo_db:
+    #container_name: database_container
+    image: mongo:latest
+    restart: always
+    volumes:
+      - mongo_db:/data/db
+  app:
+    build: .
+    ports:
+      - 8080:8080
+    volumes:
+      - ./images:/images
+    environment:
+      APP_NAME: social 
+      PORT: 8080
+      DB_URI: mongodb://mongo_db:27017/social
+    depends_on:
+      - mongo_db
+  nginx:
+    restart: always
+    build:
+      context: ./nginx
+    ports:
+      - 80:80
+volumes:
+  mongo_db: {}
